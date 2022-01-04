@@ -108,31 +108,37 @@ export const computeCover = (scale: number, imageSize: Size, size: Size, cropAre
 };
 
 export const translateRangeX = (scale: number, imageSize: Size, cropArea: Size, minZoom: number) => {
-  const cropARatio = getAspectRatio(cropArea);
-  const imageARatio = getAspectRatio(imageSize);
-  const initialFit = cropARatio > imageARatio ? Fit.height : Fit.width;
-
-  if (initialFit === Fit.width) {
-    const imageOutsideBoxSize = (cropArea.width * scale) / minZoom - cropArea.width;
-    return {max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2};
-  } else {
-    const imageOutsideBoxSize = cropArea.width * scale - cropArea.width;
-    return {max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2};
-  }
+  // const cropARatio = getAspectRatio(cropArea);
+    // const imageARatio = getAspectRatio(imageSize);
+    // const initialFit = cropARatio > imageARatio ? Fit.height : Fit.width;
+    // if (initialFit === Fit.width) {
+    //     const imageOutsideBoxSize = (cropArea.width * scale) / minZoom - cropArea.width;
+    //     return { max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2 };
+    // }
+    // else {
+    // const imageOutsideBoxSize = cropArea.width * scale - cropArea.width;
+    // return { max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2 };
+    // }
+    const imageARatio = getAspectRatio(imageSize);
+    const imageOutsideBoxSize = cropArea.width * (imageARatio > 1 ? 1 : 2) * scale;
+    return { max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2 };
 };
 
 export const translateRangeY = (scale: number, imageSize: Size, cropArea: Size, minZoom: number) => {
-  const cropARatio = getAspectRatio(cropArea);
-  const imageARatio = getAspectRatio(imageSize);
-  const initialFit = cropARatio < imageARatio ? Fit.width : Fit.height;
-
-  if (initialFit === Fit.height) {
-    const imageOutsideBoxSize = (cropArea.height * scale) / minZoom - cropArea.height;
-    return {max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2};
-  } else {
-    const imageOutsideBoxSize = cropArea.height * scale - cropArea.height;
-    return {max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2};
-  }
+  // const cropARatio = getAspectRatio(cropArea);
+    // const imageARatio = getAspectRatio(imageSize);
+    // const initialFit = cropARatio < imageARatio ? Fit.width : Fit.height;
+    // if (initialFit === Fit.height) {
+    //     const imageOutsideBoxSize = (cropArea.height * scale) / minZoom - cropArea.height;
+    //     return { max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2 };
+    // }
+    // else {
+    // const imageOutsideBoxSize = cropArea.height * scale - cropArea.height;
+    // return { max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2 };
+    // }
+    const imageARatio = getAspectRatio(imageSize);
+    const imageOutsideBoxSize = cropArea.height * (imageARatio < 1 ? 1 : 2) * scale;
+    return { max: imageOutsideBoxSize / 2, min: -imageOutsideBoxSize / 2 };
 };
 
 export const computeTranslation = (current: number, last: number, max: number, min: number) => {

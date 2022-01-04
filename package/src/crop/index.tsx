@@ -1,5 +1,5 @@
 import ImageEditor from "@react-native-community/image-editor";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle, Ref } from "react";
 import { Animated, View, Dimensions, StyleSheet } from "react-native";
 import {
   State,
@@ -8,7 +8,7 @@ import {
   GestureEvent,
 } from "react-native-gesture-handler";
 
-import MaskedView from "./masked";
+import MaskedView from '@react-native-masked-view/masked-view';
 import {
   Size,
   round,
@@ -34,6 +34,10 @@ import {
 const { width: DEFAULT_WIDTH } = Dimensions.get("window");
 const DEFAULT_ANIM_DURATION = 180;
 
+export interface CropInstance {
+  reset: () => void
+}
+
 export type CropProps = {
   source: { uri: string };
   cropShape?: "rect" | "circle";
@@ -54,7 +58,7 @@ export type CropProps = {
   ) => void;
 };
 
-const Crop = (props: CropProps): JSX.Element => {
+const Crop = forwardRef((props: CropProps, ref: Ref<CropInstance>): JSX.Element => {
   const {
     source,
     cropShape = "circle",
@@ -332,6 +336,18 @@ const Crop = (props: CropProps): JSX.Element => {
     }
   };
 
+  useImperativeHandle(
+    ref,
+    () => ({
+      reset: () => {
+      removeScaleListeners();
+      removeTranslationListeners();
+      init()
+      },
+    }),
+    []
+  );
+
   const borderRadius =
     cropShape === "circle" ? Math.max(cropArea.height, cropArea.width) : 0;
 
@@ -384,7 +400,9 @@ const Crop = (props: CropProps): JSX.Element => {
                 style={[
                   styles.contain,
                   {
-                    ...cropArea,
+                    // ...cropArea,
+                    width,
+                    height,
                     transform: [{ scale }],
                   },
                 ]}
@@ -411,7 +429,7 @@ const Crop = (props: CropProps): JSX.Element => {
       </PinchGestureHandler>
     </PanGestureHandler>
   );
-};
+});
 
 export default Crop;
 
